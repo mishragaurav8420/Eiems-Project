@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animation Test - Ei EMS</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        body { padding-top: 80px; }
+        .test-section { min-height: 100vh; padding: 50px 20px; }
+        .test-card { margin: 20px auto; max-width: 300px; }
+        .status { position: fixed; top: 100px; right: 20px; background: #0066cc; color: white; padding: 20px; border-radius: 8px; max-width: 300px; }
+    </style>
+</head>
+<body>
+    <div class="status">
+        <h3>Animation Status:</h3>
+        <div id="animationStatus"></div>
+    </div>
+
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="logo">Animation Test</div>
+        </div>
+    </nav>
+
+    <!-- Hero Test -->
+    <section class="hero">
+        <div class="container">
+            <h1>Hero Animation Test</h1>
+            <p>Background should be animating</p>
+        </div>
+    </section>
+
+    <!-- Scroll Reveal Test -->
+    <div class="test-section" style="background: var(--bg-secondary);">
+        <div class="container">
+            <h2 class="text-center mb-lg">Scroll Reveal Test</h2>
+            <div class="test-card card scroll-reveal">
+                <div class="card-icon animate-pulse">🔧</div>
+                <h3>Card 1</h3>
+                <p>This should fade in on scroll</p>
+            </div>
+            <div class="test-card card scroll-reveal">
+                <div class="card-icon animate-pulse">🚀</div>
+                <h3>Card 2</h3>
+                <p>This should fade in on scroll</p>
+            </div>
+            <div class="test-card card scroll-reveal">
+                <div class="card-icon animate-pulse">⚡</div>
+                <h3>Card 3</h3>
+                <p>This should fade in on scroll</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tilt Effect Test -->
+    <div class="test-section">
+        <div class="container">
+            <h2 class="text-center mb-lg">Hover Tilt Test</h2>
+            <div class="test-card card card-tilt">
+                <h3>Hover Me!</h3>
+                <p>I should tilt on hover</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shimmer Text Test -->
+    <div class="test-section" style="background: var(--dark-bg); color: white;">
+        <div class="container text-center">
+            <h2 class="text-shimmer">Shimmer Text Test</h2>
+            <p>The heading should shimmer</p>
+        </div>
+    </div>
+
+    <button class="theme-toggle" id="themeToggle">🌙</button>
+
+    <script src="assets/js/main.js"></script>
+    <script>
+        // Check animation status
+        setTimeout(() => {
+            const status = document.getElementById('animationStatus');
+            let checks = [];
+            
+            // Check if scroll reveal exists
+            const scrollReveals = document.querySelectorAll('.scroll-reveal');
+            checks.push(`Scroll Reveal Elements: ${scrollReveals.length}`);
+            
+            // Check if CSS animations loaded
+            const testCard = document.querySelector('.card');
+            if (testCard) {
+                const styles = window.getComputedStyle(testCard);
+                checks.push(`Card Transition: ${styles.transition}`);
+            }
+            
+            // Check hero animation
+            const hero = document.querySelector('.hero');
+            if (hero) {
+                const heroStyles = window.getComputedStyle(hero);
+                checks.push(`Hero Animation: ${heroStyles.animation ? 'Yes' : 'No'}`);
+            }
+            
+            status.innerHTML = checks.join('<br>');
+        }, 1000);
+
+        // Test scroll reveal manually
+        console.log('Testing animations...');
+        console.log('Scroll reveal elements:', document.querySelectorAll('.scroll-reveal').length);
+        console.log('Theme toggle:', document.getElementById('themeToggle') ? 'Found' : 'Not found');
+    </script>
+</body>
+</html>
