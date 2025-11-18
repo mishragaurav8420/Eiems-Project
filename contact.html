@@ -7,6 +7,9 @@
     <title>Contact Us - Get a Quote | Ei EMS India Pvt. Ltd.</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
+
+    <!-- Calendly Styles -->
+    <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
 </head>
 <body>
 
@@ -25,9 +28,7 @@
                 <li><a href="index.html" class="nav-link">Home</a></li>
                 <li><a href="about.html" class="nav-link">About Us</a></li>
                 <li><a href="services.html" class="nav-link">Services</a></li>
-                <li><a href="case-studies.html" class="nav-link">Case Studies</a></li>
-                <li><a href="quality.html" class="nav-link">Quality</a></li>
-                <li><a href="contact.html" class="nav-link btn-primary active">Get Quote</a></li>
+                <li><a href="contact.html" class="nav-link btn-primary active">Contact</a></li>
             </ul>
         </div>
     </nav>
@@ -185,8 +186,62 @@
         </div>
     </section>
 
+    <!-- Schedule a Call Section -->
+    <section class="section-gradient" id="book-demo" style="position: relative; overflow: hidden;">
+        <!-- Animated background elements -->
+        <div style="position: absolute; top: -30%; left: -10%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%); border-radius: 50%; animation: float 8s ease-in-out infinite;"></div>
+        <div style="position: absolute; bottom: -20%; right: -5%; width: 300px; height: 300px; background: radial-gradient(circle, rgba(0, 204, 255, 0.15) 0%, transparent 70%); border-radius: 50%; animation: float 6s ease-in-out infinite reverse;"></div>
+
+        <div class="container" style="position: relative; z-index: 1;">
+            <div class="text-center mb-lg">
+                <div style="display: inline-block; background: rgba(255,255,255,0.15); padding: 0.5rem 1.5rem; border-radius: var(--radius-md); margin-bottom: var(--spacing-md);">
+                    <span style="color: var(--white); font-weight: 600;">Free 30-Minute Consultation</span>
+                </div>
+                <h2 style="color: var(--white); font-size: 2.5rem;">Schedule a Call <span style="color: var(--accent-cyan);">With Our Experts</span></h2>
+                <p style="font-size: 1.125rem; opacity: 0.95; max-width: 600px; margin: var(--spacing-sm) auto 0;">
+                    Book a consultation to discuss your project requirements and get expert advice
+                </p>
+            </div>
+
+            <div class="grid grid-3" style="gap: var(--spacing-lg); margin-bottom: var(--spacing-xl);">
+                <!-- Benefit 1 -->
+                <div class="card text-center" style="background: rgba(255,255,255,0.95);">
+                    <div style="width: 60px; height: 60px; background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-cyan) 100%); border-radius: 50%; margin: 0 auto var(--spacing-sm); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">💡</div>
+                    <h4 style="margin-bottom: var(--spacing-sm);">Expert Guidance</h4>
+                    <p class="card-text">Get technical advice from our experienced engineering team</p>
+                </div>
+
+                <!-- Benefit 2 -->
+                <div class="card text-center" style="background: rgba(255,255,255,0.95);">
+                    <div style="width: 60px; height: 60px; background: linear-gradient(135deg, var(--accent-green) 0%, #00ffcc 100%); border-radius: 50%; margin: 0 auto var(--spacing-sm); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">📋</div>
+                    <h4 style="margin-bottom: var(--spacing-sm);">Project Assessment</h4>
+                    <p class="card-text">Receive a preliminary feasibility analysis for your project</p>
+                </div>
+
+                <!-- Benefit 3 -->
+                <div class="card text-center" style="background: rgba(255,255,255,0.95);">
+                    <div style="width: 60px; height: 60px; background: linear-gradient(135deg, var(--accent-orange) 0%, #ff9933 100%); border-radius: 50%; margin: 0 auto var(--spacing-sm); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">💰</div>
+                    <h4 style="margin-bottom: var(--spacing-sm);">Quick Quote</h4>
+                    <p class="card-text">Get a preliminary cost estimate for your requirements</p>
+                </div>
+            </div>
+
+            <!-- CTA Button -->
+            <div class="text-center">
+                <a href="https://calendly.com/gaurav-maarula24/30min" target="_blank" class="btn btn-white btn-large" style="padding: 1rem 3rem; font-size: 1.125rem; display: inline-flex; align-items: center; gap: 0.75rem; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+                    <span style="font-size: 1.5rem;">📅</span>
+                    <span>Book Your Free Consultation</span>
+                    <span style="font-size: 1.25rem;">→</span>
+                </a>
+                <p style="margin-top: var(--spacing-md); opacity: 0.9; font-size: 0.875rem; color: var(--white);">
+                    No commitment required • Available Monday to Friday
+                </p>
+            </div>
+        </div>
+    </section>
+
     <!-- Why Contact Us -->
-    <section class="section-light">
+    <section>
         <div class="container">
             <div class="text-center mb-lg">
                 <h2>Why <span class="text-gradient">Partner With Us</span></h2>
@@ -382,5 +437,8 @@
     </footer>
 
     <script src="assets/js/main.js"></script>
+
+    <!-- Calendly Widget Script -->
+    <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
 </body>
 </html>

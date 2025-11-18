@@ -371,24 +371,59 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 // ========================================
-// Scroll Reveal Animation
+// Scroll Reveal Animation (IntersectionObserver)
 // ========================================
 
-function revealOnScroll() {
+document.addEventListener('DOMContentLoaded', function() {
+    // Create IntersectionObserver for scroll reveal animations
+    const scrollRevealObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                // Add staggered delay for elements in the same section
+                setTimeout(() => {
+                    entry.target.classList.add('revealed');
+                }, index * 100);
+
+                // Optionally unobserve after revealing (for one-time animation)
+                scrollRevealObserver.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.15,
+        rootMargin: '0px 0px -50px 0px'
+    });
+
+    // Observe all scroll-reveal elements
     const reveals = document.querySelectorAll('.scroll-reveal');
-
     reveals.forEach(element => {
-        const elementTop = element.getBoundingClientRect().top;
-        const elementVisible = 150;
+        scrollRevealObserver.observe(element);
+    });
 
-        if (elementTop < window.innerHeight - elementVisible) {
-            element.classList.add('revealed');
+    // Also observe cards and other animated elements
+    const animatedElements = document.querySelectorAll('.card, .hero-content, .text-center h2');
+    animatedElements.forEach(element => {
+        if (!element.classList.contains('scroll-reveal')) {
+            element.classList.add('fade-in-element');
         }
     });
-}
 
-window.addEventListener('scroll', revealOnScroll);
-window.addEventListener('load', revealOnScroll);
+    // Create observer for fade-in elements
+    const fadeInObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('fade-in-visible');
+                fadeInObserver.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px'
+    });
+
+    document.querySelectorAll('.fade-in-element').forEach(element => {
+        fadeInObserver.observe(element);
+    });
+});
 
 
 // ========================================
