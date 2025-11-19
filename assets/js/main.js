@@ -466,6 +466,179 @@ document.querySelectorAll('.stat-number').forEach(counter => {
 });
 
 
+// ========================================
+// Engagement Popup
+// ========================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if popup was already shown in this session
+    const popupShown = sessionStorage.getItem('popupShown');
+
+    if (!popupShown) {
+        // Show popup after 8 seconds (only once per session)
+        setTimeout(showEngagementPopup, 8000);
+    }
+});
+
+function showEngagementPopup() {
+    // Create overlay
+    const overlay = document.createElement('div');
+    overlay.id = 'popup-overlay';
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(5px);
+        z-index: 10000;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    `;
+
+    // Create popup
+    const popup = document.createElement('div');
+    popup.id = 'engagement-popup';
+    popup.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.8);
+        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+        border-radius: 16px;
+        padding: 2.5rem;
+        max-width: 450px;
+        width: 90%;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        z-index: 10001;
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        text-align: center;
+    `;
+
+    popup.innerHTML = `
+        <button id="popup-close" style="
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+            transition: color 0.2s ease;
+            padding: 5px;
+        ">&times;</button>
+
+        <div style="
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #0066cc 0%, #00ccff 100%);
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            animation: pulse 2s ease-in-out infinite;
+        ">🚀</div>
+
+        <h3 style="
+            font-size: 1.5rem;
+            color: #1a1a1a;
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+        ">Ready to Build Your Product?</h3>
+
+        <p style="
+            color: #666;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        ">Get a <strong>free consultation</strong> with our engineering experts. We'll help you bring your electronics project to life!</p>
+
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <a href="contact.html" id="popup-cta" style="
+                background: linear-gradient(135deg, #0066cc 0%, #00ccff 100%);
+                color: white;
+                padding: 0.875rem 1.5rem;
+                border-radius: 8px;
+                font-weight: 600;
+                text-decoration: none;
+                transition: all 0.3s ease;
+                display: block;
+            ">Get Free Quote</a>
+
+            <a href="https://calendly.com/gaurav-maarula24/30min" target="_blank" style="
+                background: transparent;
+                color: #0066cc;
+                padding: 0.75rem 1.5rem;
+                border: 2px solid #0066cc;
+                border-radius: 8px;
+                font-weight: 600;
+                text-decoration: none;
+                transition: all 0.3s ease;
+                display: block;
+            ">Schedule a Call</a>
+        </div>
+
+        <p style="
+            font-size: 0.75rem;
+            color: #999;
+            margin-top: 1rem;
+            margin-bottom: 0;
+        ">No spam, just solutions for your project</p>
+    `;
+
+    document.body.appendChild(overlay);
+    document.body.appendChild(popup);
+
+    // Animate in
+    requestAnimationFrame(() => {
+        overlay.style.opacity = '1';
+        popup.style.opacity = '1';
+        popup.style.transform = 'translate(-50%, -50%) scale(1)';
+    });
+
+    // Close handlers
+    const closePopup = () => {
+        overlay.style.opacity = '0';
+        popup.style.opacity = '0';
+        popup.style.transform = 'translate(-50%, -50%) scale(0.8)';
+
+        setTimeout(() => {
+            overlay.remove();
+            popup.remove();
+        }, 300);
+
+        // Mark as shown for this session
+        sessionStorage.setItem('popupShown', 'true');
+    };
+
+    document.getElementById('popup-close').addEventListener('click', closePopup);
+    overlay.addEventListener('click', closePopup);
+
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closePopup();
+        }
+    });
+
+    // Hover effects for buttons
+    const ctaBtn = document.getElementById('popup-cta');
+    ctaBtn.addEventListener('mouseenter', () => {
+        ctaBtn.style.transform = 'translateY(-2px)';
+        ctaBtn.style.boxShadow = '0 8px 20px rgba(0, 102, 204, 0.4)';
+    });
+    ctaBtn.addEventListener('mouseleave', () => {
+        ctaBtn.style.transform = 'translateY(0)';
+        ctaBtn.style.boxShadow = 'none';
+    });
+}
+
+
 // Console message
 console.log('%c⚡ Ei EMS India Pvt. Ltd. ⚡', 'color: #0066cc; font-size: 20px; font-weight: bold;');
 console.log('%cWorld-Class Electronics Manufacturing Services', 'color: #666; font-size: 14px;');
