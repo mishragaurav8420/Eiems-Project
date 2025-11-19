@@ -851,6 +851,24 @@ section {
     background-color: var(--card-bg);
     color: var(--text-primary);
     transition: var(--transition-fast);
+    position: relative;
+    z-index: 10;
+}
+
+/* Ensure form elements are clickable inside cards */
+.form-group {
+    position: relative;
+    z-index: 10;
+}
+
+form {
+    position: relative;
+    z-index: 10;
+}
+
+form button {
+    position: relative;
+    z-index: 10;
 }
 
 .form-input:focus,
