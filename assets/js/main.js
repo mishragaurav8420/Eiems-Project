@@ -85,79 +85,96 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 // Form Validation (Contact Page)
 // ========================================
 
-const contactFormElement = document.querySelector('#contactForm form');
+document.addEventListener('DOMContentLoaded', function() {
+    // Try multiple selectors to find the form
+    const contactFormElement = document.querySelector('form[action*="formspree"]') ||
+                               document.querySelector('#contactForm form') ||
+                               document.querySelector('form');
 
-if (contactFormElement) {
-    contactFormElement.addEventListener('submit', function(e) {
-        // Get form fields - use name attribute since inputs don't have IDs
-        const name = this.querySelector('input[name="name"]');
-        const email = this.querySelector('input[name="email"]');
-        const company = this.querySelector('input[name="company"]');
-        const phone = this.querySelector('input[name="phone"]');
-        const service = this.querySelector('select[name="service"]');
-        const message = this.querySelector('textarea[name="message"]');
+    if (contactFormElement) {
+        contactFormElement.addEventListener('submit', function(e) {
+            try {
+                // Get form fields - use name attribute
+                const name = this.querySelector('input[name="name"]');
+                const email = this.querySelector('input[name="email"]');
+                const company = this.querySelector('input[name="company"]');
+                const phone = this.querySelector('input[name="phone"]');
+                const service = this.querySelector('select[name="service"]');
+                const message = this.querySelector('textarea[name="message"]');
 
-        // Reset error states
-        clearErrors();
+                // Check if all required elements exist
+                if (!name || !email || !company || !service || !message) {
+                    console.log('Some form elements not found - skipping validation');
+                    return; // Allow form to submit normally if elements are missing
+                }
 
-        let isValid = true;
+                // Reset error states
+                clearErrors();
 
-        // Validate name
-        if (!name.value.trim()) {
-            showError(name, 'Name is required');
-            isValid = false;
-        }
+                let isValid = true;
 
-        // Validate email
-        if (!email.value.trim()) {
-            showError(email, 'Email is required');
-            isValid = false;
-        } else if (!isValidEmail(email.value)) {
-            showError(email, 'Please enter a valid email address');
-            isValid = false;
-        }
+                // Validate name
+                if (name && !name.value.trim()) {
+                    showError(name, 'Name is required');
+                    isValid = false;
+                }
 
-        // Validate company
-        if (!company.value.trim()) {
-            showError(company, 'Company name is required');
-            isValid = false;
-        }
+                // Validate email
+                if (email && !email.value.trim()) {
+                    showError(email, 'Email is required');
+                    isValid = false;
+                } else if (email && !isValidEmail(email.value)) {
+                    showError(email, 'Please enter a valid email address');
+                    isValid = false;
+                }
 
-        // Validate phone (optional but format check if provided)
-        if (phone && phone.value.trim() && !isValidPhone(phone.value)) {
-            showError(phone, 'Please enter a valid phone number');
-            isValid = false;
-        }
+                // Validate company
+                if (company && !company.value.trim()) {
+                    showError(company, 'Company name is required');
+                    isValid = false;
+                }
 
-        // Validate service selection
-        if (!service.value) {
-            showError(service, 'Please select a service');
-            isValid = false;
-        }
+                // Validate phone (optional but format check if provided)
+                if (phone && phone.value.trim() && !isValidPhone(phone.value)) {
+                    showError(phone, 'Please enter a valid phone number');
+                    isValid = false;
+                }
 
-        // Validate message
-        if (!message.value.trim()) {
-            showError(message, 'Message is required');
-            isValid = false;
-        } else if (message.value.trim().length < 10) {
-            showError(message, 'Message must be at least 10 characters');
-            isValid = false;
-        }
+                // Validate service selection
+                if (service && !service.value) {
+                    showError(service, 'Please select a service');
+                    isValid = false;
+                }
 
-        // If form is NOT valid, prevent submission
-        if (!isValid) {
-            e.preventDefault();
-            return false;
-        }
+                // Validate message
+                if (message && !message.value.trim()) {
+                    showError(message, 'Message is required');
+                    isValid = false;
+                } else if (message && message.value.trim().length < 10) {
+                    showError(message, 'Message must be at least 10 characters');
+                    isValid = false;
+                }
 
-        // If valid, allow Formspree to handle submission
-        // Show a loading message
-        const submitBtn = this.querySelector('button[type="submit"]');
-        const originalText = submitBtn.textContent;
-        submitBtn.textContent = 'Sending...';
-        submitBtn.disabled = true;
-    });
-}
+                // If form is NOT valid, prevent submission
+                if (!isValid) {
+                    e.preventDefault();
+                    return false;
+                }
+
+                // If valid, allow Formspree to handle submission
+                // Show a loading message
+                const submitBtn = this.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.textContent = 'Sending...';
+                    submitBtn.disabled = true;
+                }
+            } catch (error) {
+                console.error('Form validation error:', error);
+                // Allow form to submit if there's any error in validation
+            }
+        });
+    }
+});
 
 // Helper function to show error
 function showError(element, message) {
