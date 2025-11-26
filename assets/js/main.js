@@ -92,7 +92,9 @@ document.addEventListener('DOMContentLoaded', function() {
                                document.querySelector('form');
 
     if (contactFormElement) {
-        contactFormElement.addEventListener('submit', function(e) {
+        contactFormElement.addEventListener('submit', async function(e) {
+            e.preventDefault(); // Always prevent default to handle with AJAX
+
             try {
                 // Get form fields - use name attribute
                 const name = this.querySelector('input[name="name"]');
@@ -100,12 +102,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 const company = this.querySelector('input[name="company"]');
                 const phone = this.querySelector('input[name="phone"]');
                 const service = this.querySelector('select[name="service"]');
+                const volume = this.querySelector('select[name="volume"]');
                 const message = this.querySelector('textarea[name="message"]');
 
                 // Check if all required elements exist
                 if (!name || !email || !company || !service || !message) {
-                    console.log('Some form elements not found - skipping validation');
-                    return; // Allow form to submit normally if elements are missing
+                    console.log('Some form elements not found');
+                    showFormError('Form error. Please refresh and try again.');
+                    return;
                 }
 
                 // Reset error states
@@ -155,22 +159,59 @@ document.addEventListener('DOMContentLoaded', function() {
                     isValid = false;
                 }
 
-                // If form is NOT valid, prevent submission
+                // If form is NOT valid, stop here
                 if (!isValid) {
-                    e.preventDefault();
                     return false;
                 }
 
-                // If valid, allow Formspree to handle submission
-                // Show a loading message
+                // If valid, submit via AJAX
                 const submitBtn = this.querySelector('button[type="submit"]');
+                const originalBtnText = submitBtn ? submitBtn.textContent : 'Submit Request';
+
                 if (submitBtn) {
                     submitBtn.textContent = 'Sending...';
                     submitBtn.disabled = true;
                 }
+
+                // Prepare form data
+                const formData = new FormData(this);
+
+                // Submit to Formspree
+                try {
+                    const response = await fetch(this.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        // Success! Show success message
+                        showFormSuccessMessage();
+                        // Reset form
+                        this.reset();
+                        // Scroll to top of form
+                        this.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    } else {
+                        // Error from Formspree
+                        const data = await response.json();
+                        showFormError(data.error || 'Something went wrong. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Form submission error:', error);
+                    showFormError('Network error. Please check your connection and try again.');
+                } finally {
+                    // Re-enable button
+                    if (submitBtn) {
+                        submitBtn.textContent = originalBtnText;
+                        submitBtn.disabled = false;
+                    }
+                }
+
             } catch (error) {
                 console.error('Form validation error:', error);
-                // Allow form to submit if there's any error in validation
+                showFormError('An error occurred. Please try again.');
             }
         });
     }
@@ -212,36 +253,84 @@ function isValidPhone(phone) {
     return phoneRegex.test(phone);
 }
 
-// Show success message
-function showSuccessMessage() {
+// Show success message for form submission
+function showFormSuccessMessage() {
+    // Remove any existing message
+    const existingMsg = document.getElementById('form-notification');
+    if (existingMsg) existingMsg.remove();
+
     const successDiv = document.createElement('div');
+    successDiv.id = 'form-notification';
     successDiv.style.cssText = `
-        position: fixed;
-        top: 100px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: linear-gradient(135deg, #00cc66 0%, #00ccff 100%);
+        background: linear-gradient(135deg, #00cc66 0%, #00ffcc 100%);
         color: white;
         padding: 1.5rem 2rem;
-        border-radius: 8px;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-        z-index: 10000;
-        animation: slideDown 0.3s ease;
-        max-width: 90%;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 20px rgba(0, 204, 102, 0.3);
+        animation: slideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         text-align: center;
+        border: 2px solid rgba(255, 255, 255, 0.3);
     `;
     successDiv.innerHTML = `
-        <div style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem;">✓ Message Sent Successfully!</div>
-        <div>Thank you for contacting Ei EMS. We'll get back to you soon.</div>
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">✓</div>
+        <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">Message Sent Successfully!</div>
+        <div style="font-size: 1rem; opacity: 0.95;">Thank you for contacting Ei EMS India. Our team will get back to you within 24 hours.</div>
     `;
 
-    document.body.appendChild(successDiv);
+    // Insert at the top of the form container
+    const formContainer = document.querySelector('#contactForm .card');
+    if (formContainer) {
+        formContainer.insertBefore(successDiv, formContainer.firstChild);
+    }
 
-    // Remove after 5 seconds
+    // Auto-remove after 10 seconds
     setTimeout(() => {
-        successDiv.style.animation = 'slideUp 0.3s ease';
-        setTimeout(() => successDiv.remove(), 300);
-    }, 5000);
+        if (successDiv && successDiv.parentNode) {
+            successDiv.style.animation = 'slideUp 0.3s ease';
+            setTimeout(() => successDiv.remove(), 300);
+        }
+    }, 10000);
+}
+
+// Show error message for form submission
+function showFormError(errorMessage) {
+    // Remove any existing message
+    const existingMsg = document.getElementById('form-notification');
+    if (existingMsg) existingMsg.remove();
+
+    const errorDiv = document.createElement('div');
+    errorDiv.id = 'form-notification';
+    errorDiv.style.cssText = `
+        background: linear-gradient(135deg, #ff3333 0%, #ff6666 100%);
+        color: white;
+        padding: 1.5rem 2rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 20px rgba(255, 51, 51, 0.3);
+        animation: slideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        text-align: center;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+    `;
+    errorDiv.innerHTML = `
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;">✕</div>
+        <div style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem;">Submission Failed</div>
+        <div style="font-size: 0.95rem; opacity: 0.95;">${errorMessage}</div>
+    `;
+
+    // Insert at the top of the form container
+    const formContainer = document.querySelector('#contactForm .card');
+    if (formContainer) {
+        formContainer.insertBefore(errorDiv, formContainer.firstChild);
+    }
+
+    // Auto-remove after 8 seconds
+    setTimeout(() => {
+        if (errorDiv && errorDiv.parentNode) {
+            errorDiv.style.animation = 'slideUp 0.3s ease';
+            setTimeout(() => errorDiv.remove(), 300);
+        }
+    }, 8000);
 }
 
 // Add animations
