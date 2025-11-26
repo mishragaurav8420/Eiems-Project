@@ -85,19 +85,17 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 // Form Validation (Contact Page)
 // ========================================
 
-const contactForm = document.getElementById('contactForm');
+const contactFormElement = document.querySelector('#contactForm form');
 
-if (contactForm) {
-    contactForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        // Get form fields
-        const name = document.getElementById('name');
-        const email = document.getElementById('email');
-        const company = document.getElementById('company');
-        const phone = document.getElementById('phone');
-        const service = document.getElementById('service');
-        const message = document.getElementById('message');
+if (contactFormElement) {
+    contactFormElement.addEventListener('submit', function(e) {
+        // Get form fields - use name attribute since inputs don't have IDs
+        const name = this.querySelector('input[name="name"]');
+        const email = this.querySelector('input[name="email"]');
+        const company = this.querySelector('input[name="company"]');
+        const phone = this.querySelector('input[name="phone"]');
+        const service = this.querySelector('select[name="service"]');
+        const message = this.querySelector('textarea[name="message"]');
 
         // Reset error states
         clearErrors();
@@ -126,7 +124,7 @@ if (contactForm) {
         }
 
         // Validate phone (optional but format check if provided)
-        if (phone.value.trim() && !isValidPhone(phone.value)) {
+        if (phone && phone.value.trim() && !isValidPhone(phone.value)) {
             showError(phone, 'Please enter a valid phone number');
             isValid = false;
         }
@@ -146,11 +144,18 @@ if (contactForm) {
             isValid = false;
         }
 
-        // If form is valid, show success message
-        if (isValid) {
-            showSuccessMessage();
-            contactForm.reset();
+        // If form is NOT valid, prevent submission
+        if (!isValid) {
+            e.preventDefault();
+            return false;
         }
+
+        // If valid, allow Formspree to handle submission
+        // Show a loading message
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Sending...';
+        submitBtn.disabled = true;
     });
 }
 
